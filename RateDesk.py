@@ -19,7 +19,7 @@ def main_menu(): #This is the main menu. Allows users to create new sheet or vie
         try:
             user_input = int(user_input)
         except ValueError: #Learned something new to catch invalid input that might crash the whole thing. Before this, if user entered something other than 1 or 2, the program would crash. 
-            print("Invalid Input. Try Agian")
+            print("Invalid Input. Try again")
             print()
             continue
 
@@ -137,7 +137,7 @@ def add_platforms(room_data, room_type): #This is a separate function to add OTA
                     print()
                     break
                 except ValueError:
-                    print("Invalid Input. Try Agian.")
+                    print("Invalid Input. Try again.")
                     print()
                     continue
 
