@@ -59,8 +59,8 @@ def create_new_sheet(property_name, room_data): #To generate table from collecte
 
 def generate_table(property_name, room_data): #This is the actual function used to generate table from collected data. This is used in both creating new sheet and viewing history.
     print(f"Property: {property_name}")
-    print("| Room Type | Platform | Weekday Rate | Weekend Rate |")
-    print("|-----------|----------|--------------|--------------|")
+    print("| Room Type | Platform | Weekday Rate | Weekend Rate |") #This is the header of the table. I know it's not the best way to create a table, but it works for now. Maybe I can use some library later to make it look better.
+    print("|-----------|----------|--------------|--------------|") #This is just to create a line under the header.
     for room_type, room_info in room_data.items():
         base_rate = room_info["base_rate"]
         weekend_markup = room_info["weekend_markup"]
@@ -84,7 +84,7 @@ def generate_table(property_name, room_data): #This is the actual function used 
 
 def data_collection(): #The actual function where all the data collection happens. It collects property name, currency, room types, base rates, weekend markups and OTA platforms with their commissions. It returns the property name and room data in a dictionary format.
     property_name = input("What is your property's name?: ")
-    currency = currency_selector()
+    currency = currency_selector() #Only INR, USD and EUR for now. I thought of making it a separate function because it might be useful later if I want to add more currencies or do something else with currency selection.
     print()
     room_data = {}
     while True:
@@ -216,9 +216,9 @@ def save_to_json(property_name, room_data): #This as the name suggest saves data
         month_confirmation = input(f"{save_for_month}. Type 'yes' to confirm or 'no' to re-enter: ")
         if month_confirmation == "yes":
             try:
-                with open("history.json", "r") as f:
+                with open("history.json", "r") as f: #Learned about file handling in python to read and write json files. Before this, I was not able to save history of sheets and view them later. Now, I can save the sheets in a json file and load them later to view history.
                     history = json.load(f)
-            except FileNotFoundError:
+            except FileNotFoundError: #Learned something new again to handle the case when history.json does not exist. Before this, if user tried to save a sheet without any existing history, the program would crash. Now it creates an empty history if the file is not found.
                 history = {}
 
             if property_name not in history:
@@ -252,7 +252,7 @@ def view_history(): #This is the function to view history of sheets from main me
     
     #Show properties
     print("\nSaved properties:")
-    for index, property_name in enumerate(history, start=1):
+    for index, property_name in enumerate(history, start=1): #Learned about enumerate function in python to loop through a list with index. Before this, I was using a regular for loop with a separate index variable, which was more cumbersome. Now I can use enumerate to get both the index and the property name in a cleaner way.
         print(f"{index}. {property_name}")
 
     while True:
