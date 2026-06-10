@@ -1,49 +1,47 @@
 """
 ------------------------------------------------
-PROPERTY BOOKING RATE SHEET CACULATOR - RATEDESK
+PROPERTY BOOKING RATE SHEET CALCULATOR - RATEDESK
 ------------------------------------------------
 """
-import json
-import pyfiglet
+import json #To save and load history of sheets. Learned something new here. 
+import pyfiglet #For fancy project title x'D
 
 
 def main():
-    main_menu()
-    
+    main_menu() #In hindsight, this is not required. But it does make it easier to add more stuff later to main_menu later. 
     
 
-
-def main_menu():
+def main_menu(): #This is the main menu. Allows users to create new sheet or view history as of now.
     print("Welcome to")
-    print(pyfiglet.figlet_format("RateDesk"))
-    while True:
+    print(pyfiglet.figlet_format("RateDesk")) #YAAY Fancy text title :D
+    while True: #Loop until user gives valid input
         user_input = input("1. Create a new sheet.\n2. View History\nSelect option '1' or '2': ")
         try:
             user_input = int(user_input)
-        except ValueError:
+        except ValueError: #Learned something new to catch invalid input that might crash the whole thing. Before this, if user entered something other than 1 or 2, the program would crash. 
             print("Invalid Input. Try Agian")
             print()
             continue
 
         if user_input == 1:
            print()
-           property_name, room_data = data_collection()
+           property_name, room_data = data_collection() #This is where all the data collection happens. It returns the property name and room data in a dictionary format.
            #create_new_sheet() #old TO BE REMOVED
-           create_new_sheet(property_name, room_data)
+           create_new_sheet(property_name, room_data) #This is where the table is generated. 
            break
 
         elif user_input == 2:
            print()
-           view_history()
+           view_history() #This is where user can view history of sheets. Can select property and month to view the sheet.
            break
 
         else:
-            print("Input invalid. Try again.")
+            print("Input invalid. Try again.") #To filter invalid inputs. 
             print()
             continue
 
     
-def create_new_sheet(property_name, room_data):
+def create_new_sheet(property_name, room_data): #To generate table from collected data and save to json file. 
     generate_table(property_name, room_data)
     while True:
         save_data = input("Do you want to save this sheet? (yes/no): ")
@@ -58,31 +56,8 @@ def create_new_sheet(property_name, room_data):
             continue
     save_to_json(property_name, room_data)
 
-"""
-### ALL CALCULATION MOVDED TO generate_table() ###
 
-    for room_type, room_info in room_data.items():
-        base_rate = room_info["base_rate"]
-        weekend_markup = room_info["weekend_markup"]
-        
-        if room_info["platforms"]:  #platforms exist
-            for platform, commission in room_info["platforms"].items():
-                weekday_rate = base_rate * (1 + commission/100)
-                if weekend_markup is not None:
-                    weekend_rate = base_rate * (1 + weekend_markup/100) * (1 + commission/100)
-                else:
-                    weekend_rate = None
-                print(f"Room: {room_type}, Platform: {platform}, Weekday: {room_info['currency']}{weekday_rate:.2f}", end="")
-                if weekend_rate is not None:
-                    print(f", Weekend: {room_info['currency']}{weekend_rate:.2f}")
-                else:
-                    print(", Weekend: N/A")
-        
-        else:  #no platforms
-            print(f"Room: {room_type}, Base Rate: {room_info['currency']}{base_rate:.2f}, No platforms added")
-"""
-
-def generate_table(property_name, room_data):
+def generate_table(property_name, room_data): #This is the actual function used to generate table from collected data. This is used in both creating new sheet and viewing history.
     print(f"Property: {property_name}")
     print("| Room Type | Platform | Weekday Rate | Weekend Rate |")
     print("|-----------|----------|--------------|--------------|")
@@ -107,7 +82,7 @@ def generate_table(property_name, room_data):
             print(f"| {room_type} | N/A | {room_info['currency']}{base_rate:.2f} | N/A |")
 
 
-def data_collection():
+def data_collection(): #The actual function where all the data collection happens. It collects property name, currency, room types, base rates, weekend markups and OTA platforms with their commissions. It returns the property name and room data in a dictionary format.
     property_name = input("What is your property's name?: ")
     currency = currency_selector()
     print()
@@ -150,7 +125,7 @@ def data_collection():
     return property_name, room_data
 
 
-def add_platforms(room_data, room_type):
+def add_platforms(room_data, room_type): #This is a separate function to add OTA platforms and their commissions for a specific room type. This is called from data_collection() function.
     ota_platform_need = input("Do you want to add OTA platforms for this room type? (yes/no): ")
     if ota_platform_need == "yes":
         while True:
@@ -189,7 +164,7 @@ def add_platforms(room_data, room_type):
     
 
 
-def currency_selector():
+def currency_selector(): #This is a separate function to select currency. This is called from data_collection() function. I thought of making it a separate function because it might be useful later if I want to add more currencies or do something else with currency selection.
     while True:
         currency = input("Select currency:\n1. USD ($)\n2. INR (₹)\n3. EUR (€)\nChoose '1', '2' or '3': ")
 
@@ -211,7 +186,7 @@ def currency_selector():
             print()
             continue
 
-def weekend_markup():
+def weekend_markup(): #This is a separate function to add weekend markup for a specific room type. This is called from data_collection() function. I thought of making it a separate function because not all properties might have weekend markups, and it keeps the code cleaner.
     while True:
         weekend_rate_need = input("Do you want to add weekend rates? (yes/no): ")
         if weekend_rate_need == "yes":
@@ -235,7 +210,7 @@ def weekend_markup():
             continue
 
 
-def save_to_json(property_name, room_data):
+def save_to_json(property_name, room_data): #This as the name suggest saves data to a json file. It checks if history exisits and if does not, creates an empty dictionary.
     while True:
         save_for_month = input("Enter month and year for which you want to save the sheet (e.g., 'January 2024'): ")
         month_confirmation = input(f"{save_for_month}. Type 'yes' to confirm or 'no' to re-enter: ")
@@ -267,7 +242,7 @@ def save_to_json(property_name, room_data):
 
         
 
-def view_history():
+def view_history(): #This is the function to view history of sheets from main menu. 
     try:
         with open("history.json", "r") as f:
             history = json.load(f)
